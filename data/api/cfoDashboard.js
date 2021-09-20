@@ -5,38 +5,49 @@ module.exports.generateCFODashboard = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let images = [];
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < data.length; i++) {
                 let trend = [];
-                trend.push(20);
+                trend.push(parseInt(`${data[i].M0}`),
+                    parseInt(`${data[i].M1}`),
+                    parseInt(`${data[i].M2}`),
+                    parseInt(`${data[i].M3}`),
+                    parseInt(`${data[i].M4}`),
+                    parseInt(`${data[i].M5}`),
+                    parseInt(`${data[i].M6}`),
+                    parseInt(`${data[i].M7}`),
+                    parseInt(`${data[i].M8}`),
+                    parseInt(`${data[i].M9}`),
+                    parseInt(`${data[i].M10}`),
+                    parseInt(`${data[i].M11}`),
+                    parseInt(`${data[i].M12}`));
                 var body = JSON.stringify(
                     {
                         "metadata": { "X": "XLabel", "Y": "YLabel" },
                         "data": {
-                            "title": 'cfo',
-                            "measure": '30',
-                            "change": '10',
+                            "title": `${data[i].KpiName.trim()}`,
+                            "measure": `${data[i].currency.trim()}${data[i].KpiValue.trim()}${data[i].Percentage.trim()}`,
+                            "change": `${data[i].PercentSwing.trim()}`,
                             "trend": trend,
-                            "yoyComparison": '11'
+                            "yoyComparison": `${data[i].YoyGrowth.trim()}`
                         }
                     })
                 var options = {
                     'method': 'POST',
-                    'url': 'https://visualsmicroservice.azurewebsites.net/trendtile2',
+					'url': 'https://visualsmicroservice.azurewebsites.net/trendtile2',
                     'headers': {
                         'Content-Type': 'application/json'
                     },
                     body: body
                 };
-
                 request(options, function (error, response) {
                     if (error) {
                         console.error(error);
-                        if (images.length === 6) {
+                        if (images.length === 4) {
                             resolve(images);
                         }
                     } else {
                         images.push(response.body)
-                        if (images.length === 6) {
+                        if (images.length === 4) {
                             resolve(images);
                         }
                     }
